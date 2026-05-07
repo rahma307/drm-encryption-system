@@ -37,6 +37,7 @@
             font-size: 15px;
         }
 
+        /* Grid background */
         body::before {
             content: '';
             position: fixed;
@@ -295,6 +296,7 @@
         .badge-yellow { background: rgba(210,153,34,0.12); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
         .badge-blue { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
 
+        /* Toast notifications */
         .toast-container {
             position: fixed;
             top: 72px;
@@ -415,28 +417,11 @@
     </div>
 
     <script>
-        function generateDeviceId() {
-            let id = localStorage.getItem('device_id');
-            if (!id) {
-                const nav = navigator.userAgent || '';
-                const screenData = `${screen.width}x${screen.height}`;
-                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-                const raw = `${nav}|${screenData}|${timezone}|${Date.now()}`;
-                let hash = 0;
-                for (let i = 0; i < raw.length; i++) {
-                    hash = ((hash << 5) - hash) + raw.charCodeAt(i);
-                    hash |= 0;
-                }
-                id = 'dev_' + Math.abs(hash).toString(16) + '_' + Date.now().toString(36);
-                localStorage.setItem('device_id', id);
-            }
-            return id;
-        }
-
+        // ── Toast system ──
         function showToast(msg, type = 'info', duration = 5000) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `toast toast-${type === 'error' ? 'error' : 'success'}`;
+            toast.className = `toast toast-${type}`;
             toast.innerHTML = msg;
             container.appendChild(toast);
             setTimeout(() => {
@@ -446,11 +431,11 @@
                 setTimeout(() => toast.remove(), 200);
             }, duration);
         }
-        window.showMessage = showToast;
+        window.showMessage = (msg, type) => showToast(msg, type === 'error' ? 'error' : 'success');
 
+        // ── Auth helpers ──
         function getToken() { return localStorage.getItem('session_token'); }
         function getUsername() { return localStorage.getItem('username'); }
-        function getDeviceIdFromStorage() { return localStorage.getItem('device_id'); }
         function isLoggedIn() { return !!getToken(); }
 
         function updateNav() {
@@ -460,11 +445,9 @@
             navUser.textContent = username || '';
             navUser.style.display = loggedIn ? 'inline-flex' : 'none';
             ['link-dashboard','link-encrypt','link-decrypt','link-logout'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = loggedIn ? '' : 'none';
+                document.getElementById(id).style.display = loggedIn ? '' : 'none';
             });
-            const loginLink = document.getElementById('link-login');
-            if (loginLink) loginLink.style.display = loggedIn ? 'none' : '';
+            document.getElementById('link-login').style.display = loggedIn ? 'none' : '';
         }
 
         async function doLogout() {
@@ -478,6 +461,5 @@
 
         document.addEventListener('DOMContentLoaded', updateNav);
     </script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html>

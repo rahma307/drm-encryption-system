@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 {% block title %}فك تشفير — SecureDRM{% endblock %}
-
 {% block content %}
-<div style="font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:24px;">
-    SecureDRM / decrypt
-</div>
-
+<div style="font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:24px;">SecureDRM / decrypt</div>
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+
+    <!-- Form -->
     <div class="card">
         <h1 style="font-size:1.5rem; margin-bottom:4px;">🔓 فك تشفير ملف</h1>
-        <p style="color:var(--text-muted); font-size:0.875rem; margin-bottom:28px;">
-            يتم التحقق من صلاحيات الجهاز تلقائياً
-        </p>
+        <p style="color:var(--text-muted); font-size:0.875rem; margin-bottom:28px;">السيرفر يتحقق من الترخيص والجهاز قبل الفك</p>
 
         <div class="form-group">
             <label>الملف المشفر (.drm) *</label>
@@ -20,81 +16,95 @@
 
         <div class="form-group">
             <label>License ID *</label>
-            <input type="text" id="license-id" placeholder="أدخل License ID" style="font-family:var(--mono);">
+            <input type="text" id="license-id" placeholder="مثال: a3f7c2d1e9b04f82" style="font-family:var(--mono);">
         </div>
 
         <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px;">
-            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;">
-                🔐 Device Verification
-            </div>
-            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:8px;">
-                الجهاز الحالي: <code id="current-device-id" style="font-size:0.7rem;">...</code>
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">Device ID</div>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:12px; line-height:1.6;">
+                إذا كان الترخيص مرتبطاً بجهاز، يجب إرسال device_id الخاص بك.
+                السيرفر يتحقق من التطابق.
             </p>
+            <input type="text" id="device-id" placeholder="device_id" style="font-family:var(--mono);">
+            <button class="btn btn-ghost" onclick="useMyDevice()" style="width:100%; justify-content:center; margin-top:10px; font-size:0.85rem;">
+                📱 استخدام جهازي الحالي تلقائياً
+            </button>
         </div>
 
-        <button class="btn" id="dec-btn" onclick="doDecrypt()" style="width:100%;">
+        <button class="btn" id="dec-btn" onclick="doDecrypt()" style="width:100%; justify-content:center;">
             🔓 فك التشفير
         </button>
     </div>
 
+    <!-- Info -->
     <div>
         <div class="card" style="margin-bottom:16px;">
-            <h2 style="font-size:0.9rem; margin-bottom:16px;">🔐 تدفق فك التشفير</h2>
+            <h2 style="color:var(--text); font-size:0.9rem; margin-bottom:16px;">🔐 تدفق فك التشفير</h2>
             <div style="font-family:var(--mono); font-size:0.75rem; color:var(--text-muted); line-height:2.2;">
                 <div><span style="color:var(--accent);">1.</span> التحقق من session_token</div>
-                <div><span style="color:var(--accent);">2.</span> التحقق من license_id</div>
+                <div><span style="color:var(--accent);">2.</span> التحقق من license_id في DB</div>
                 <div><span style="color:var(--accent);">3.</span> التحقق من ملكية المستخدم</div>
                 <div><span style="color:var(--accent);">4.</span> التحقق من انتهاء الصلاحية</div>
-                <div><span style="color:var(--accent);">5.</span> التحقق من الاستخدامات</div>
-                <div><span style="color:var(--accent);">6.</span> التحقق من الجهاز</div>
-                <div><span style="color:var(--green);">7.</span> فك التشفير باستخدام AES key</div>
+                <div><span style="color:var(--accent);">5.</span> التحقق من عدد الاستخدامات</div>
+                <div><span style="color:var(--accent);">6.</span> التحقق من device_id المرسل</div>
+                <div><span style="color:var(--green);">7.</span> استرداد مفتاح AES من DB وفك التشفير</div>
             </div>
         </div>
 
         <div class="card" id="result-card" style="display:none;">
-            <h2 style="color:var(--green); font-size:0.9rem;">✅ تم فك التشفير</h2>
+            <h2 style="color:var(--green); font-size:0.9rem; margin-bottom:16px;">✅ تم فك التشفير</h2>
             <div id="result-info" style="font-family:var(--mono); font-size:0.8rem; color:var(--text-muted); line-height:2;"></div>
         </div>
 
         <div class="card" id="error-card" style="display:none; border-color:rgba(248,81,73,0.3);">
-            <h2 style="color:var(--red); font-size:0.9rem;">❌ رُفض الطلب</h2>
+            <h2 style="color:var(--red); font-size:0.9rem; margin-bottom:12px;">❌ رُفض الطلب</h2>
             <div id="error-detail" style="font-family:var(--mono); font-size:0.8rem; color:var(--text-muted);"></div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script>
+async function getDeviceId() {
+    let id = localStorage.getItem('device_fingerprint');
+    if (!id) {
+        const rand = crypto.getRandomValues(new Uint8Array(16));
+        id = 'fp_' + Array.from(rand).map(b=>b.toString(16).padStart(2,'0')).join('');
+        localStorage.setItem('device_fingerprint', id);
+    }
+    return id;
+}
+
+async function useMyDevice() {
+    const id = await getDeviceId();
+    document.getElementById('device-id').value = id;
+}
+
+// Auto-fill device ID on load
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!localStorage.getItem('session_token')) { window.location.href = '/login'; return; }
+    const id = await getDeviceId();
+    document.getElementById('device-id').value = id;
+});
+
 async function doDecrypt() {
     const file = document.getElementById('file-input').files[0];
     const licenseId = document.getElementById('license-id').value.trim();
+    const deviceId = document.getElementById('device-id').value.trim();
 
-    if (!file) {
-        showToast('اختر الملف المشفر', 'error');
-        return;
-    }
-    if (!licenseId) {
-        showToast('أدخل License ID', 'error');
-        return;
-    }
+    if (!file) { showToast('اختر الملف المشفر', 'error'); return; }
+    if (!licenseId) { showToast('أدخل License ID', 'error'); return; }
 
     const btn = document.getElementById('dec-btn');
-    btn.disabled = true;
-    btn.textContent = '⏳ جاري الفك...';
+    btn.disabled = true; btn.textContent = '⏳ جاري الفك...';
 
     document.getElementById('result-card').style.display = 'none';
     document.getElementById('error-card').style.display = 'none';
 
     try {
-        const deviceId = localStorage.getItem('device_id') || generateDeviceId();
-
         const arrayBuffer = await file.arrayBuffer();
-        let binary = '';
         const bytes = new Uint8Array(arrayBuffer);
-        for (let i = 0; i < bytes.length; i++) {
-            binary += String.fromCharCode(bytes[i]);
-        }
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
         const b64File = btoa(binary);
 
         const res = await fetch('/api/decrypt', {
@@ -106,25 +116,19 @@ async function doDecrypt() {
             body: JSON.stringify({
                 encrypted_file: b64File,
                 license_id: licenseId,
-                device_id: deviceId
+                device_id: deviceId || null
             })
         });
 
-        if (res.status === 401) {
-            localStorage.clear();
-            window.location.href = '/login';
-            return;
-        }
+        if (res.status === 401) { localStorage.clear(); window.location.href = '/login'; return; }
 
         const data = await res.json();
 
         if (data.success) {
+            // Download decrypted file
             const raw = atob(data.decrypted_file);
             const outBytes = new Uint8Array(raw.length);
-            for (let i = 0; i < raw.length; i++) {
-                outBytes[i] = raw.charCodeAt(i);
-            }
-
+            for (let i = 0; i < raw.length; i++) outBytes[i] = raw.charCodeAt(i);
             const blob = new Blob([outBytes]);
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -133,32 +137,21 @@ async function doDecrypt() {
             a.click();
             URL.revokeObjectURL(url);
 
-            document.getElementById('result-info').innerHTML = `
-                الملف: <span style="color:var(--text)">${data.original_filename || '—'}</span><br>
-                الاستخدامات المتبقية: <span style="color:var(--text)">${data.uses_remaining ?? '∞'}</span>
-            `;
+            document.getElementById('result-info').innerHTML =
+                `الملف: <span style="color:var(--text)">${data.original_filename || '—'}</span><br>` +
+                `الاستخدامات المتبقية: <span style="color:var(--text)">${data.uses_remaining === null ? '∞' : data.uses_remaining}</span>`;
             document.getElementById('result-card').style.display = 'block';
-            showToast('تم فك التشفير بنجاح', 'success');
+            showToast('✅ تم فك التشفير وتنزيل الملف', 'success');
         } else {
             document.getElementById('error-detail').textContent = data.error || 'فشل غير معروف';
             document.getElementById('error-card').style.display = 'block';
             showToast(data.error || 'فشل فك التشفير', 'error');
         }
     } catch(e) {
-        showToast('خطأ في الاتصال: ' + e.message, 'error');
+        showToast('خطأ في الاتصال', 'error');
     } finally {
-        btn.disabled = false;
-        btn.textContent = '🔓 فك التشفير';
+        btn.disabled = false; btn.textContent = '🔓 فك التشفير';
     }
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-    if (!localStorage.getItem('session_token')) {
-        window.location.href = '/login';
-        return;
-    }
-    const deviceId = localStorage.getItem('device_id') || generateDeviceId();
-    document.getElementById('current-device-id').textContent = deviceId.slice(0, 16) + '...';
-});
 </script>
 {% endblock %}
