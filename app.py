@@ -401,11 +401,7 @@ def api_decrypt():
             _log_audit(user_id, 'DECRYPT_DENIED', f'License not found: {license_id}', request)
             return jsonify({'success': False, 'error': 'License not found'}), 404
 
-        # ── 2. OWNERSHIP — user must own this license ──
-        if lic.user_id != user_id:
-            _log_audit(user_id, 'DECRYPT_DENIED', f'Ownership mismatch: license {license_id}', request)
-            return jsonify({'success': False, 'error': 'Access denied'}), 403
-
+        
         # ── 3. REVOCATION ──
         if lic.is_revoked:
             return jsonify({'success': False, 'error': 'License has been revoked'}), 403
