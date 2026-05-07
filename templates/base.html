@@ -1,30 +1,30 @@
-<!-- <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SecureDRM{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #080c12;
-            --surface: #0d1117;
-            --surface-2: #161b22;
-            --border: #21262d;
+            --bg: #0a0c10;
+            --surface: #0f1117;
+            --surface-2: #181c26;
+            --border: #252a33;
             --border-accent: #30363d;
-            --accent: #58a6ff;
-            --accent-dim: #1f6feb;
-            --accent-glow: rgba(88,166,255,0.12);
-            --green: #3fb950;
-            --green-glow: rgba(63,185,80,0.12);
-            --red: #f85149;
-            --yellow: #d29922;
-            --text: #e6edf3;
-            --text-muted: #8b949e;
-            --text-dim: #484f58;
+            --accent: #3b82f6;
+            --accent-dim: #2563eb;
+            --accent-glow: rgba(59,130,246,0.1);
+            --green: #10b981;
+            --green-glow: rgba(16,185,129,0.08);
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
             --mono: 'IBM Plex Mono', monospace;
-            --sans: 'Tajawal', sans-serif;
+            --sans: 'Inter', system-ui, sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,34 +37,31 @@
             font-size: 15px;
         }
 
-        /* Grid background */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background-image:
-                linear-gradient(rgba(88,166,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(88,166,255,0.03) 1px, transparent 1px);
+            background-image: radial-gradient(circle at 1px 1px, rgba(59,130,246,0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
             z-index: 0;
         }
 
         .navbar {
-            background: rgba(13,17,23,0.9);
+            background: rgba(15,17,23,0.92);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             padding: 0 32px;
             position: sticky;
             top: 0;
             z-index: 100;
-            height: 56px;
+            height: 60px;
             display: flex;
             align-items: center;
         }
 
         .navbar-inner {
-            max-width: 1100px;
+            max-width: 1200px;
             width: 100%;
             margin: 0 auto;
             display: flex;
@@ -81,7 +78,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            letter-spacing: -0.02em;
         }
 
         .logo::before {
@@ -102,17 +98,17 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .nav-links a, .nav-btn {
             font-family: var(--sans);
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
             transition: all 0.15s;
             border: none;
             background: none;
@@ -129,16 +125,16 @@
             font-size: 0.75rem;
             color: var(--accent);
             background: var(--accent-glow);
-            border: 1px solid rgba(88,166,255,0.2);
-            padding: 4px 12px;
+            border: 1px solid rgba(59,130,246,0.2);
+            padding: 4px 14px;
             border-radius: 20px;
             margin-left: 8px;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: 32px 24px;
             position: relative;
             z-index: 1;
         }
@@ -146,38 +142,23 @@
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 28px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
-            opacity: 0.4;
+            margin-bottom: 24px;
         }
 
         h1 {
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 1.6rem;
+            font-weight: 700;
             color: var(--text);
-            margin-bottom: 8px;
-            letter-spacing: -0.03em;
+            margin-bottom: 6px;
         }
 
         h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
             color: var(--text-muted);
             margin-bottom: 20px;
-            letter-spacing: -0.01em;
         }
 
         .btn {
@@ -189,25 +170,17 @@
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            font-family: var(--sans);
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.15s;
             text-decoration: none;
-            letter-spacing: 0.01em;
         }
 
         .btn:hover {
             background: var(--accent);
             transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(88,166,255,0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.3);
         }
 
         .btn-ghost {
@@ -223,15 +196,14 @@
         }
 
         .btn-danger {
-            background: rgba(248,81,73,0.15);
-            border: 1px solid rgba(248,81,73,0.3);
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.25);
             color: var(--red);
         }
 
         .btn-danger:hover {
             background: var(--red);
             color: white;
-            box-shadow: 0 4px 16px rgba(248,81,73,0.3);
         }
 
         .form-group {
@@ -242,40 +214,35 @@
             display: block;
             margin-bottom: 6px;
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
         }
 
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 10px 14px;
             background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text);
-            font-size: 0.9rem;
-            font-family: var(--sans);
+            font-size: 0.85rem;
             transition: all 0.15s;
         }
 
-        input[type="file"] {
-            padding: 8px 12px;
-        }
-
-        input:focus, select:focus, textarea:focus {
+        input:focus {
             outline: none;
-            border-color: var(--accent-dim);
+            border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
-        code, .mono {
+        code {
             font-family: var(--mono);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             background: var(--bg);
             padding: 2px 6px;
-            border-radius: 4px;
+            border-radius: 5px;
             border: 1px solid var(--border);
             color: var(--accent);
         }
@@ -285,40 +252,34 @@
             align-items: center;
             gap: 4px;
             padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
             font-weight: 600;
-            font-family: var(--mono);
         }
 
-        .badge-green { background: var(--green-glow); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
-        .badge-red { background: rgba(248,81,73,0.12); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
-        .badge-yellow { background: rgba(210,153,34,0.12); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
-        .badge-blue { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
+        .badge-green { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+        .badge-red { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+        .badge-yellow { background: rgba(245,158,11,0.1); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+        .badge-blue { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(59,130,246,0.2); }
 
-        /* Toast notifications */
         .toast-container {
             position: fixed;
             top: 72px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 340px;
-            max-width: 500px;
+            min-width: 300px;
+            max-width: 450px;
         }
 
         .toast {
             background: var(--surface-2);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 14px 18px;
-            font-size: 0.875rem;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
             animation: slideIn 0.2s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .toast::before {
@@ -341,53 +302,47 @@
 
         table { width: 100%; border-collapse: collapse; }
         th {
-            padding: 10px 14px;
-            text-align: right;
-            font-size: 0.75rem;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-dim);
             text-transform: uppercase;
-            letter-spacing: 0.06em;
             border-bottom: 1px solid var(--border);
         }
         td {
-            padding: 12px 14px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border);
-            font-size: 0.875rem;
-            vertical-align: middle;
+            font-size: 0.85rem;
         }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: rgba(255,255,255,0.02); }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
         .stat-card {
             background: var(--surface-2);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 18px;
         }
 
-        .stat-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-        .stat-value { font-size: 1.75rem; font-weight: 800; font-family: var(--mono); color: var(--text); }
+        .stat-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; font-family: var(--mono); color: var(--text); }
 
         .footer {
             border-top: 1px solid var(--border);
             text-align: center;
             padding: 24px;
-            font-family: var(--mono);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-dim);
-            position: relative;
-            z-index: 1;
             margin-top: 40px;
         }
 
         @media (max-width: 640px) {
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
             .navbar { padding: 0 16px; }
-            .container { padding: 24px 16px; }
+            .container { padding: 20px 16px; }
         }
     </style>
 </head>
@@ -397,11 +352,11 @@
             <a href="/" class="logo">SecureDRM</a>
             <div class="nav-links" id="nav-links">
                 <span class="nav-user" id="nav-user" style="display:none"></span>
-                <a href="/dashboard" id="link-dashboard" style="display:none">لوحة التحكم</a>
-                <a href="/encrypt" id="link-encrypt" style="display:none">تشفير</a>
-                <a href="/decrypt" id="link-decrypt" style="display:none">فك تشفير</a>
-                <button class="nav-btn" id="link-logout" onclick="doLogout()" style="display:none">خروج</button>
-                <a href="/login" id="link-login" class="btn" style="padding:6px 14px; font-size:0.8rem;">دخول</a>
+                <a href="/dashboard" id="link-dashboard" style="display:none">Dashboard</a>
+                <a href="/encrypt" id="link-encrypt" style="display:none">Encrypt</a>
+                <a href="/decrypt" id="link-decrypt" style="display:none">Decrypt</a>
+                <button class="nav-btn" id="link-logout" onclick="doLogout()" style="display:none">Logout</button>
+                <a href="/login" id="link-login" class="btn" style="padding:5px 16px; font-size:0.8rem;">Sign In</a>
             </div>
         </div>
     </nav>
@@ -413,11 +368,10 @@
     </div>
 
     <div class="footer">
-        SecureDRM · AES-256-GCM + RSA-2048 · Zero-metadata file format · Server-enforced DRM
+        SecureDRM · Enterprise File Protection · Zero-Metadata Encryption
     </div>
 
     <script>
-        // ── Toast system ──
         function showToast(msg, type = 'info', duration = 5000) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -433,7 +387,6 @@
         }
         window.showMessage = (msg, type) => showToast(msg, type === 'error' ? 'error' : 'success');
 
-        // ── Auth helpers ──
         function getToken() { return localStorage.getItem('session_token'); }
         function getUsername() { return localStorage.getItem('username'); }
         function isLoggedIn() { return !!getToken(); }
@@ -445,491 +398,17 @@
             navUser.textContent = username || '';
             navUser.style.display = loggedIn ? 'inline-flex' : 'none';
             ['link-dashboard','link-encrypt','link-decrypt','link-logout'].forEach(id => {
-                document.getElementById(id).style.display = loggedIn ? '' : 'none';
+                const el = document.getElementById(id);
+                if(el) el.style.display = loggedIn ? '' : 'none';
             });
-            document.getElementById('link-login').style.display = loggedIn ? 'none' : '';
+            const loginLink = document.getElementById('link-login');
+            if(loginLink) loginLink.style.display = loggedIn ? 'none' : '';
         }
 
         async function doLogout() {
             const token = getToken();
             if (token) {
                 try { await fetch('/api/logout', { method:'POST', headers:{'Authorization':'Bearer '+token} }); } catch(e) {}
-            }
-            localStorage.clear();
-            window.location.href = '/login';
-        }
-
-        document.addEventListener('DOMContentLoaded', updateNav);
-    </script>
-</body>
-</html> -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SecureDRM{% endblock %}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #0A0C10;
-            --surface: #111318;
-            --surface-2: #181C26;
-            --border: #252A33;
-            --border-light: #2F3540;
-            --accent: #3B82F6;
-            --accent-dark: #2563EB;
-            --accent-glow: rgba(59,130,246,0.08);
-            --green: #10B981;
-            --green-glow: rgba(16,185,129,0.08);
-            --red: #EF4444;
-            --yellow: #F59E0B;
-            --text: #F1F5F9;
-            --text-muted: #94A3B8;
-            --text-dim: #64748B;
-            --mono: 'JetBrains Mono', monospace;
-            --sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --radius: 14px;
-            --radius-sm: 10px;
-        }
-
-        body {
-            font-family: var(--sans);
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            line-height: 1.5;
-        }
-
-        /* Subtle grid background */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: radial-gradient(circle at 1px 1px, rgba(59,130,246,0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .navbar {
-            background: rgba(17,19,24,0.85);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            height: 64px;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-inner {
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-family: var(--mono);
-            font-size: 1rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #60A5FA, #3B82F6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.3px;
-        }
-
-        .logo-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-links a, .nav-btn {
-            font-family: var(--sans);
-            font-size: 0.85rem;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 40px;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            color: var(--text-muted);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover, .nav-btn:hover {
-            background: var(--surface-2);
-            color: var(--text);
-        }
-
-        .nav-user {
-            background: var(--accent-glow);
-            border: 1px solid rgba(59,130,246,0.25);
-            border-radius: 40px;
-            padding: 5px 18px;
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-left: 8px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 24px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 28px;
-            margin-bottom: 24px;
-            transition: all 0.2s;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #FFFFFF, #CBD5E1);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--accent-dark);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            font-family: var(--sans);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background: var(--accent);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(59,130,246,0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-light);
-            color: var(--text-muted);
-        }
-
-        .btn-outline:hover {
-            background: var(--surface-2);
-            color: var(--text);
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-danger {
-            background: rgba(239,68,68,0.12);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: var(--red);
-        }
-
-        .btn-danger:hover {
-            background: var(--red);
-            color: white;
-            box-shadow: 0 4px 12px rgba(239,68,68,0.3);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 14px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text);
-            font-size: 0.85rem;
-            font-family: var(--sans);
-            transition: all 0.15s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        code, .mono {
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            background: var(--bg);
-            padding: 2px 6px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            color: var(--accent);
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            font-family: var(--mono);
-        }
-
-        .badge-green { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
-        .badge-red { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
-        .badge-yellow { background: rgba(245,158,11,0.1); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
-        .badge-blue { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(59,130,246,0.2); }
-
-        .toast-container {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 320px;
-            max-width: 450px;
-        }
-
-        .toast {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 20px;
-            font-size: 0.85rem;
-            animation: slideIn 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .toast::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-        }
-
-        .toast-success::before { background: var(--green); }
-        .toast-error::before { background: var(--red); }
-        .toast-info::before { background: var(--accent); }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.85rem;
-            vertical-align: middle;
-        }
-
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-
-        .stat-card {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 20px;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            font-family: var(--mono);
-            color: var(--text);
-        }
-
-        .footer {
-            border-top: 1px solid var(--border);
-            text-align: center;
-            padding: 28px;
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            position: relative;
-            z-index: 1;
-            margin-top: 48px;
-        }
-
-        @media (max-width: 720px) {
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
-            .navbar { padding: 0 16px; }
-            .container { padding: 24px 16px; }
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-inner">
-            <a href="/" class="logo">
-                <span class="logo-dot"></span>
-                SecureDRM
-            </a>
-            <div class="nav-links" id="nav-links">
-                <span class="nav-user" id="nav-user" style="display:none"></span>
-                <a href="/dashboard" id="link-dashboard" style="display:none">Dashboard</a>
-                <a href="/encrypt" id="link-encrypt" style="display:none">Encrypt</a>
-                <a href="/decrypt" id="link-decrypt" style="display:none">Decrypt</a>
-                <button class="nav-btn" id="link-logout" onclick="doLogout()" style="display:none">Logout</button>
-                <a href="/login" id="link-login" class="btn" style="padding:6px 18px; font-size:0.8rem;">Sign In</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="toast-container" id="toast-container"></div>
-
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-
-    <div class="footer">
-        SecureDRM · AES-256-GCM + RSA-2048 · Zero-metadata encryption · Server-enforced DRM
-    </div>
-
-    <script>
-        function showToast(msg, type = 'info', duration = 5000) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.innerHTML = msg;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-4px)';
-                toast.style.transition = '0.2s';
-                setTimeout(() => toast.remove(), 200);
-            }, duration);
-        }
-        window.showMessage = (msg, type) => showToast(msg, type === 'error' ? 'error' : 'success');
-
-        function getToken() { return localStorage.getItem('session_token'); }
-        function getUsername() { return localStorage.getItem('username'); }
-        function isLoggedIn() { return !!getToken(); }
-
-        function updateNav() {
-            const loggedIn = isLoggedIn();
-            const username = getUsername();
-            const navUser = document.getElementById('nav-user');
-            navUser.textContent = username || '';
-            navUser.style.display = loggedIn ? 'inline-flex' : 'none';
-            ['link-dashboard', 'link-encrypt', 'link-decrypt', 'link-logout'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = loggedIn ? '' : 'none';
-            });
-            const loginLink = document.getElementById('link-login');
-            if (loginLink) loginLink.style.display = loggedIn ? 'none' : '';
-        }
-
-        async function doLogout() {
-            const token = getToken();
-            if (token) {
-                try {
-                    await fetch('/api/logout', {
-                        method: 'POST',
-                        headers: { 'Authorization': 'Bearer ' + token }
-                    });
-                } catch(e) {}
             }
             localStorage.clear();
             window.location.href = '/login';

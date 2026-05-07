@@ -1,63 +1,58 @@
 {% extends "base.html" %}
-{% block title %}فك تشفير — SecureDRM{% endblock %}
+{% block title %}Decrypt — SecureDRM{% endblock %}
 {% block content %}
-<div style="font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:24px;">SecureDRM / decrypt</div>
+<div style="font-family:var(--mono); font-size:0.65rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:24px;">SecureDRM / Decrypt</div>
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
 
     <!-- Form -->
     <div class="card">
-        <h1 style="font-size:1.5rem; margin-bottom:4px;">🔓 فك تشفير ملف</h1>
-        <p style="color:var(--text-muted); font-size:0.875rem; margin-bottom:28px;">السيرفر يتحقق من الترخيص والجهاز قبل الفك</p>
+        <h1 style="font-size:1.5rem; margin-bottom:4px;">🔓 Decrypt File</h1>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:28px;">Server verifies license and device before decryption</p>
 
         <div class="form-group">
-            <label>الملف المشفر (.drm) *</label>
+            <label>Encrypted file (.drm) *</label>
             <input type="file" id="file-input" accept=".drm">
         </div>
 
         <div class="form-group">
             <label>License ID *</label>
-            <input type="text" id="license-id" placeholder="مثال: a3f7c2d1e9b04f82" style="font-family:var(--mono);">
+            <input type="text" id="license-id" placeholder="e.g., a3f7c2d1e9b04f82" style="font-family:var(--mono);">
         </div>
 
-        <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px;">
-            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">Device ID</div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:20px;">
+            <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">Device ID</div>
             <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:12px; line-height:1.6;">
-                إذا كان الترخيص مرتبطاً بجهاز، يجب إرسال device_id الخاص بك.
-                السيرفر يتحقق من التطابق.
+                If license is device-bound, provide your device ID for verification.
             </p>
             <input type="text" id="device-id" placeholder="device_id" style="font-family:var(--mono);">
-            <button class="btn btn-ghost" onclick="useMyDevice()" style="width:100%; justify-content:center; margin-top:10px; font-size:0.85rem;">
-                📱 استخدام جهازي الحالي تلقائياً
+            <button class="btn btn-ghost" onclick="useMyDevice()" style="width:100%; justify-content:center; margin-top:10px;">
+                📱 Use my current device
             </button>
         </div>
 
         <button class="btn" id="dec-btn" onclick="doDecrypt()" style="width:100%; justify-content:center;">
-            🔓 فك التشفير
+            🔓 Decrypt File
         </button>
     </div>
 
-    <!-- Info -->
+    <!-- Result / Error cards only -->
     <div>
-        <div class="card" style="margin-bottom:16px;">
-            <h2 style="color:var(--text); font-size:0.9rem; margin-bottom:16px;">🔐 تدفق فك التشفير</h2>
-            <div style="font-family:var(--mono); font-size:0.75rem; color:var(--text-muted); line-height:2.2;">
-                <div><span style="color:var(--accent);">1.</span> التحقق من session_token</div>
-                <div><span style="color:var(--accent);">2.</span> التحقق من license_id في DB</div>
-                <div><span style="color:var(--accent);">3.</span> التحقق من ملكية المستخدم</div>
-                <div><span style="color:var(--accent);">4.</span> التحقق من انتهاء الصلاحية</div>
-                <div><span style="color:var(--accent);">5.</span> التحقق من عدد الاستخدامات</div>
-                <div><span style="color:var(--accent);">6.</span> التحقق من device_id المرسل</div>
-                <div><span style="color:var(--green);">7.</span> استرداد مفتاح AES من DB وفك التشفير</div>
-            </div>
+        <div class="card" style="background:var(--surface-2); border:1px solid var(--border-light);">
+            <div style="font-size:1.2rem; margin-bottom:12px;">🔐</div>
+            <h2 style="color:var(--text); font-size:0.9rem; margin-bottom:8px;">Server-Side Enforcement</h2>
+            <p style="color:var(--text-muted); font-size:0.8rem; line-height:1.6;">
+                All license checks (expiration, usage limits, device binding) are performed on the server. 
+                Encrypted files contain zero metadata — only ciphertext.
+            </p>
         </div>
 
         <div class="card" id="result-card" style="display:none;">
-            <h2 style="color:var(--green); font-size:0.9rem; margin-bottom:16px;">✅ تم فك التشفير</h2>
+            <h2 style="color:var(--green); font-size:0.9rem; margin-bottom:16px;">✅ Decryption Successful</h2>
             <div id="result-info" style="font-family:var(--mono); font-size:0.8rem; color:var(--text-muted); line-height:2;"></div>
         </div>
 
-        <div class="card" id="error-card" style="display:none; border-color:rgba(248,81,73,0.3);">
-            <h2 style="color:var(--red); font-size:0.9rem; margin-bottom:12px;">❌ رُفض الطلب</h2>
+        <div class="card" id="error-card" style="display:none; border-color:rgba(239,68,68,0.3);">
+            <h2 style="color:var(--red); font-size:0.9rem; margin-bottom:12px;">❌ Access Denied</h2>
             <div id="error-detail" style="font-family:var(--mono); font-size:0.8rem; color:var(--text-muted);"></div>
         </div>
     </div>
@@ -77,9 +72,9 @@ async function getDeviceId() {
 async function useMyDevice() {
     const id = await getDeviceId();
     document.getElementById('device-id').value = id;
+    showToast('Device ID filled', 'info');
 }
 
-// Auto-fill device ID on load
 document.addEventListener('DOMContentLoaded', async () => {
     if (!localStorage.getItem('session_token')) { window.location.href = '/login'; return; }
     const id = await getDeviceId();
@@ -91,11 +86,11 @@ async function doDecrypt() {
     const licenseId = document.getElementById('license-id').value.trim();
     const deviceId = document.getElementById('device-id').value.trim();
 
-    if (!file) { showToast('اختر الملف المشفر', 'error'); return; }
-    if (!licenseId) { showToast('أدخل License ID', 'error'); return; }
+    if (!file) { showToast('Select encrypted file', 'error'); return; }
+    if (!licenseId) { showToast('Enter License ID', 'error'); return; }
 
     const btn = document.getElementById('dec-btn');
-    btn.disabled = true; btn.textContent = '⏳ جاري الفك...';
+    btn.disabled = true; btn.textContent = '⏳ Processing...';
 
     document.getElementById('result-card').style.display = 'none';
     document.getElementById('error-card').style.display = 'none';
@@ -125,7 +120,6 @@ async function doDecrypt() {
         const data = await res.json();
 
         if (data.success) {
-            // Download decrypted file
             const raw = atob(data.decrypted_file);
             const outBytes = new Uint8Array(raw.length);
             for (let i = 0; i < raw.length; i++) outBytes[i] = raw.charCodeAt(i);
@@ -138,19 +132,19 @@ async function doDecrypt() {
             URL.revokeObjectURL(url);
 
             document.getElementById('result-info').innerHTML =
-                `الملف: <span style="color:var(--text)">${data.original_filename || '—'}</span><br>` +
-                `الاستخدامات المتبقية: <span style="color:var(--text)">${data.uses_remaining === null ? '∞' : data.uses_remaining}</span>`;
+                `File: <span style="color:var(--text)">${data.original_filename || '—'}</span><br>` +
+                `Remaining uses: <span style="color:var(--text)">${data.uses_remaining === null ? '∞' : data.uses_remaining}</span>`;
             document.getElementById('result-card').style.display = 'block';
-            showToast('✅ تم فك التشفير وتنزيل الملف', 'success');
+            showToast('✅ File decrypted successfully', 'success');
         } else {
-            document.getElementById('error-detail').textContent = data.error || 'فشل غير معروف';
+            document.getElementById('error-detail').textContent = data.error || 'Unknown error';
             document.getElementById('error-card').style.display = 'block';
-            showToast(data.error || 'فشل فك التشفير', 'error');
+            showToast(data.error || 'Decryption failed', 'error');
         }
     } catch(e) {
-        showToast('خطأ في الاتصال', 'error');
+        showToast('Connection error', 'error');
     } finally {
-        btn.disabled = false; btn.textContent = '🔓 فك التشفير';
+        btn.disabled = false; btn.textContent = '🔓 Decrypt File';
     }
 }
 </script>
