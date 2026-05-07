@@ -27,7 +27,9 @@
         لديك حساب؟ <a href="/login" style="color:var(--accent);">تسجيل الدخول</a>
     </p>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
 async function doRegister() {
     const username = document.getElementById('username').value.trim();
