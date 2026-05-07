@@ -2,6 +2,8 @@
 SecureDRM - Production-Grade Digital Rights Management System
 Encrypted files contain ZERO metadata. All DRM logic is server-side only.
 """
+import pymysql
+pymysql.install_as_MySQLdb()
 import os
 import base64
 import json
@@ -22,8 +24,13 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(32))
 
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///drm.db')
-if database_url.startswith('postgresql://'):
-    database_url = database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
+
+if database_url.startswith("mysql://"):
+    database_url = database_url.replace(
+        "mysql://",
+        "mysql+pymysql://",
+        1
+    )
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
