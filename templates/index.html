@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 {% block title %}SecureDRM — الرئيسية{% endblock %}
 {% block content %}
 <div class="card" style="text-align:center; padding: 60px 40px;">
@@ -46,6 +46,41 @@
         <div style="margin-top:20px; padding:16px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--red);">
             ❌ لا يوجد: user_id · license_id · device_id · file_name · metadata
         </div>
+    </div>
+</div>
+{% endblock %} -->
+
+{% extends "base.html" %}
+{% block title %}Home — SecureDRM{% endblock %}
+{% block content %}
+<div class="card" style="text-align:center; padding: 60px 40px;">
+    <div style="font-family:var(--mono); font-size:0.7rem; color:var(--accent); letter-spacing:0.1em; margin-bottom:16px;">ENTERPRISE DRM SOLUTION</div>
+    <h1 style="font-size:2.5rem;">Zero-Metadata<br>File Protection</h1>
+    <p style="color:var(--text-muted); max-width:520px; margin:20px auto; line-height:1.6;">
+        SecureDRM encrypts your files with military-grade algorithms.<br>
+        License policies are enforced server-side — encrypted files contain <strong>zero metadata</strong>.
+    </p>
+    <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+        <a href="/encrypt" class="btn">🔒 Encrypt File</a>
+        <a href="/decrypt" class="btn btn-outline">🔓 Decrypt File</a>
+    </div>
+</div>
+
+<div class="grid-3">
+    <div class="card">
+        <div style="font-size:1.8rem; margin-bottom:12px;">🔐</div>
+        <h2 style="color:var(--text); margin-bottom:8px;">AES-256-GCM</h2>
+        <p style="color:var(--text-muted); font-size:0.85rem;">Authenticated encryption with integrity verification.</p>
+    </div>
+    <div class="card">
+        <div style="font-size:1.8rem; margin-bottom:12px;">🔑</div>
+        <h2 style="color:var(--text); margin-bottom:8px;">RSA-2048</h2>
+        <p style="color:var(--text-muted); font-size:0.85rem;">Secure key exchange — keys never exposed to clients.</p>
+    </div>
+    <div class="card">
+        <div style="font-size:1.8rem; margin-bottom:12px;">📱</div>
+        <h2 style="color:var(--text); margin-bottom:8px;">Device Binding</h2>
+        <p style="color:var(--text-muted); font-size:0.85rem;">Restrict licenses to specific authorized devices.</p>
     </div>
 </div>
 {% endblock %}

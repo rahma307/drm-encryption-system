@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 {% block title %}إنشاء حساب — SecureDRM{% endblock %}
 {% block content %}
 <div class="card" style="max-width:420px; margin:40px auto;">
@@ -61,5 +61,79 @@ async function doRegister() {
         btn.disabled = false; btn.textContent = 'إنشاء الحساب';
     }
 }
+</script>
+{% endblock %} -->
+{% extends "base.html" %}
+{% block title %}Create Account — SecureDRM{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 440px; margin: 40px auto;">
+    <div style="font-family:var(--mono); font-size:0.65rem; color:var(--text-dim); letter-spacing:0.1em; margin-bottom:24px;">SECUREDRM / REGISTRATION</div>
+    <h1 style="font-size:1.6rem; margin-bottom:24px;">Create account</h1>
+
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" autocomplete="username" placeholder="Choose a username">
+    </div>
+    <div class="form-group">
+        <label>Email (optional)</label>
+        <input type="email" id="email" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+        <label>Password (min. 8 characters)</label>
+        <input type="password" id="password" autocomplete="new-password" placeholder="••••••••">
+    </div>
+    <div class="form-group">
+        <label>Confirm password</label>
+        <input type="password" id="confirm" autocomplete="new-password" placeholder="••••••••">
+    </div>
+    <button class="btn" id="reg-btn" onclick="doRegister()" style="width:100%; justify-content:center;">Register →</button>
+
+    <p style="margin-top:24px; text-align:center; color:var(--text-muted); font-size:0.85rem;">
+        Already have an account? <a href="/login" style="color:var(--accent);">Sign in</a>
+    </p>
+</div>
+
+<script>
+    async function doRegister() {
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm').value;
+
+        if (!username || !password) {
+            showToast('Username and password required', 'error');
+            return;
+        }
+        if (password !== confirm) {
+            showToast('Passwords do not match', 'error');
+            return;
+        }
+        if (password.length < 8) {
+            showToast('Password must be at least 8 characters', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('reg-btn');
+        btn.disabled = true; btn.textContent = '...';
+
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Account created successfully!', 'success');
+                setTimeout(() => window.location.href = '/login', 1500);
+            } else {
+                showToast(data.error || 'Registration failed', 'error');
+                btn.disabled = false; btn.textContent = 'Register →';
+            }
+        } catch(e) {
+            showToast('Connection error', 'error');
+            btn.disabled = false; btn.textContent = 'Register →';
+        }
+    }
 </script>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 {% block title %}تسجيل الدخول — SecureDRM{% endblock %}
 {% block content %}
 <div class="card" style="max-width:420px; margin:40px auto;">
@@ -52,5 +52,64 @@ async function doLogin() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+{% endblock %} -->
+{% extends "base.html" %}
+{% block title %}Sign In — SecureDRM{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 440px; margin: 40px auto;">
+    <div style="font-family:var(--mono); font-size:0.65rem; color:var(--text-dim); letter-spacing:0.1em; margin-bottom:24px;">SECUREDRM / AUTHENTICATION</div>
+    <h1 style="font-size:1.6rem; margin-bottom:24px;">Welcome back</h1>
+
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" autocomplete="username" placeholder="Enter your username">
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn" id="login-btn" onclick="doLogin()" style="width:100%; justify-content:center;">Sign In →</button>
+
+    <p style="margin-top:24px; text-align:center; color:var(--text-muted); font-size:0.85rem;">
+        Don't have an account? <a href="/register" style="color:var(--accent);">Create account</a>
+    </p>
+</div>
+
+<script>
+    async function doLogin() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        if (!username || !password) {
+            showToast('Please enter username and password', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('login-btn');
+        btn.disabled = true; btn.textContent = '...';
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem('session_token', data.session_token);
+                localStorage.setItem('user_id', data.user_id);
+                localStorage.setItem('username', data.username);
+                window.location.href = '/dashboard';
+            } else {
+                showToast(data.error || 'Login failed', 'error');
+                btn.disabled = false; btn.textContent = 'Sign In →';
+            }
+        } catch(e) {
+            showToast('Connection error', 'error');
+            btn.disabled = false; btn.textContent = 'Sign In →';
+        }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 </script>
 {% endblock %}
