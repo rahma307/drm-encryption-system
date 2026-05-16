@@ -289,7 +289,7 @@ def api_encrypt():
         max_uses = int(max_uses_raw) if max_uses_raw.isdigit() else None
         # Optional: initial device to bind (can be empty for open/floating licenses)
         initial_device_id = request.form.get('device_id', '').strip() or None
-
+        print("KEYS:", os.listdir("keys"))
         # Validate device_id length to prevent DB bloat attacks
         if initial_device_id and len(initial_device_id) > 128:
             return jsonify({'error': 'device_id exceeds maximum length of 128 characters'}), 400
